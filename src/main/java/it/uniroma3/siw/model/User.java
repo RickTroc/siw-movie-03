@@ -1,10 +1,16 @@
 package it.uniroma3.siw.model;
 
+
+import java.util.Map;
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 
 @Entity
 @Table(name = "users") // cambiamo nome perchè in postgres user e' una parola riservata
@@ -16,6 +22,9 @@ public class User {
 	private String name;
 	private String surname;
 	private String email;
+
+	@OneToMany
+	private Map<Movie, Review> reviews;
 
     public Long getId() {
 		return id;
@@ -47,4 +56,14 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	public Map<Movie, Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(Map<Movie, Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	
 }

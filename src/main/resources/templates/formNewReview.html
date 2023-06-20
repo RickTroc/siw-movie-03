@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>New Review</title>
+	<link rel="stylesheet" href="stile.css" />
+</head>
+
+<body>
+    <header>
+		<div th:if="${#request.userPrincipal}">
+			<span th:text="${#request.userPrincipal.principal.username}"></span>
+			<a href="/logout">Logout</a>
+		</div>
+		<div th:unless="${#request.userPrincipal}">
+			<a href="/login">Login</a>
+		</div>
+	</header>
+
+    <p>ricorda di cambiare il percorso di stile.css </p>
+    <div>
+        <label>
+            <span>Scrivi la tua recensione<input id="boxReview" type="text" maxlength="500" wrap="soft"></span>
+        </label>
+    </div>
+
+
+
+    <div>
+        <span><button type="submit">Conferma</button></span>
+    </div>
+</body>
+</html>
