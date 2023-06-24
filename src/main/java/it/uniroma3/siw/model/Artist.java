@@ -34,7 +34,9 @@ public class Artist {
 	
 	@OneToMany(mappedBy="director")
 	private List<Movie> directedMovies;
+
 	
+
 	public Artist(){
 		this.starredMovies = new HashSet<>();
 		this.directedMovies = new LinkedList<>();
@@ -96,6 +98,8 @@ public class Artist {
 		this.directedMovies = directedMovies;
 	}
 
+	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(name, surname);
@@ -111,6 +115,22 @@ public class Artist {
 			return false;
 		Artist other = (Artist) obj;
 		return Objects.equals(name, other.name) && Objects.equals(surname, other.surname);
+	}
+
+	public Set<Movie> getStarredMovies() {
+		return starredMovies;
+	}
+
+	public void setStarredMovies(Set<Movie> starredMovies) {
+		this.starredMovies = starredMovies;
+	}
+
+	public List<Movie> getDirectedMovies() {
+		return directedMovies;
+	}
+
+	public void setDirectedMovies(List<Movie> directedMovies) {
+		this.directedMovies = directedMovies;
 	}
 
 }

@@ -3,11 +3,14 @@ package it.uniroma3.siw.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.uniroma3.siw.model.Credentials;
+import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.repository.CredentialsRepository;
 
 @Service
@@ -36,5 +39,16 @@ public class CredentialsService {
         credentials.setRole(Credentials.DEFAULT_ROLE);
         credentials.setPassword(this.passwordEncoder.encode(credentials.getPassword()));
         return this.credentialsRepository.save(credentials);
+    }
+
+
+
+	public Credentials getLoggedCredentials() {
+    	UserDetails loggedUserDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return  this.credentialsRepository.findByUsername(loggedUserDetails.getUsername()).get();
+    }
+    
+    public User getLoggedUser() {
+        return this.getLoggedCredentials().getUser();
     }
 }

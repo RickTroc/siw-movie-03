@@ -52,6 +52,9 @@ public class MovieController {
 		return "admin/formNewMovie";
 	}
 
+
+	
+
 	@GetMapping(value = "/admin/formUpdateMovie/{id}")
 	public String formUpdateMovie(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("movie", this.movieService.findMovieById(id));
@@ -71,7 +74,7 @@ public class MovieController {
 	
 	@GetMapping(value = "/admin/setDirectorToMovie/{directorId}/{movieId}")
 	public String setDirectorToMovie(@PathVariable("directorId") Long directorId, @PathVariable("movieId") Long movieId, Model model) {
-		Movie movie = this.movieService.saveDirectorToMovie(movieId, movieId);
+		Movie movie = this.movieService.setDirectorToMovie(directorId, movieId);
 		model.addAttribute("movie", movie);
 		return "admin/formUpdateMovie.html";
 	}
@@ -79,8 +82,8 @@ public class MovieController {
 	
 	@GetMapping(value = "/admin/addDirector/{id}")
 	public String addDirector(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("artists", artistService.findAllArtist());
-		model.addAttribute("movie", movieService.findMovieById(id));
+		model.addAttribute("artists", this.artistService.findAllArtist());
+		model.addAttribute("movie", this.movieService.findMovieById(id));
 		return "admin/directorsToAdd.html";
 	}
 

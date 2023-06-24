@@ -9,6 +9,11 @@ a {
     
 }
 
+a.decorless {
+    text-decoration: none; 
+    color: white
+}
+
 a:hover { 
 	text-decoration: underline; 
 }

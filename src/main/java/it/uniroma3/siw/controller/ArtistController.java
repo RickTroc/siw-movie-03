@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import it.uniroma3.siw.model.Artist;
-import it.uniroma3.siw.repository.ArtistRepository;
+import it.uniroma3.siw.service.ArtistService;
 
 @Controller
 public class ArtistController {
-	
-	@Autowired 
-	private ArtistRepository artistRepository;
+
+	@Autowired
+	private ArtistService artistService;
 
 	@GetMapping(value="/admin/formNewArtist")
 	public String formNewArtist(Model model) {
@@ -30,8 +30,8 @@ public class ArtistController {
 	
 	@PostMapping("/admin/artist")
 	public String newArtist(@ModelAttribute("artist") Artist artist, Model model) {
-		if (!artistRepository.existsByNameAndSurname(artist.getName(), artist.getSurname())) {
-			this.artistRepository.save(artist); 
+		if (!artistService.existsByNameAndSurname(artist.getName(), artist.getSurname())) {
+			this.artistService.saveArtist(artist);
 			model.addAttribute("artist", artist);
 			return "artist.html";
 		} else {
@@ -42,13 +42,13 @@ public class ArtistController {
 
 	@GetMapping("/artist/{id}")
 	public String getArtist(@PathVariable("id") Long id, Model model) {
-		model.addAttribute("artist", this.artistRepository.findById(id).get());
+		model.addAttribute("artist", this.artistService.findArtistById(id));
 		return "artist.html";
 	}
 
 	@GetMapping("/artist")
 	public String getArtists(Model model) {
-		model.addAttribute("artists", this.artistRepository.findAll());
+		model.addAttribute("artists", this.artistService.findAllArtist());
 		return "artists.html";
 	}
 }

@@ -14,15 +14,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 import it.uniroma3.siw.model.Credentials;
 import it.uniroma3.siw.model.User;
 import it.uniroma3.siw.service.CredentialsService;
+
 
 @Controller
 public class AuthenticationController {
 	
 	@Autowired
 	private CredentialsService credentialsService;
+
+
+	
 	
 	@GetMapping(value = "/register") 
 	public String showRegisterForm (Model model) {
@@ -36,6 +41,11 @@ public class AuthenticationController {
 		return "formLogin";
 	}
 
+	@GetMapping(value = "/egg")
+	public String eEgg(Model model){
+		return "Eegg";
+	}
+
 	@GetMapping(value = "/") 
 	public String index(Model model) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -46,7 +56,7 @@ public class AuthenticationController {
 			UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			Credentials credentials = credentialsService.getCredentials(userDetails.getUsername());
 			if (credentials.getRole().equals(Credentials.ADMIN_ROLE)) {
-				return "admin/indexAdmin.html";
+				return "admin/indexAdmin";
 			}
 		}
         return "index.html";
@@ -58,7 +68,7 @@ public class AuthenticationController {
     	UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialsService.getCredentials(userDetails.getUsername());
     	if (credentials.getRole().equals(Credentials.ADMIN_ROLE)) {
-            return "admin/indexAdmin.html";
+            return "admin/indexAdmin";
         }
         return "index.html";
     }
@@ -71,7 +81,8 @@ public class AuthenticationController {
                  Model model) {
 
         // se user e credential hanno entrambi contenuti validi, memorizza User e the Credentials nel DB
-        if(!userBindingResult.hasErrors() && ! credentialsBindingResult.hasErrors()) {
+        
+		if(!userBindingResult.hasErrors() && ! credentialsBindingResult.hasErrors()) {
             credentials.setUser(user);
             credentialsService.saveCredentials(credentials);
             model.addAttribute("user", user);
