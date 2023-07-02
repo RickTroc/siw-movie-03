@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark">
+
+    <head>
+        <title>
+            Aggiorna La recensione
+        </title>
+        <link rel="stylesheet" href="/css/stile.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+            crossorigin="anonymous"></script>
+
+    </head>
+
+    <body>
+        <nav class="navbar navbar-dark" style="background-color: gray;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img src="/images/logo-siw.png" alt="Logo" width="300" height="50"
+                        class="d-inline-block align-text-top">
+
+                </a>
+                <div th:if="${#request.userPrincipal}">
+                    <span th:text="${#request.userPrincipal.principal.username}"></span>
+                    <button type="button" class="btn btn-dark btn-primary" href="/logout">
+                        <a class="decorless" href="/logout">Logout</a>
+                    </button>
+                </div>
+                <div th:unless="${#request.userPrincipal}">
+                    <button type="button" class="btn btn-dark btn-primary" href='/login'>
+                        <a class="decorless" href="/login">Login</a>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container  my-5" >
+            <h1>Modifica</h1>
+            <form th:action="@{/updateReview}" method="post" class="form">
+                <p>Punteggio</p>
+
+                <input type="number" min="1" max="5" name="score" placeholder="Score" th:value="${userReview.score}">
+
+                <input type="hidden" name="review" th:value="${userReview.id}">
+
+                <div class="mb-3 my-3">
+                    <label for="reviewTitle" class="form-label" style="width: 12em;">Titolo della recensione</label>
+                    <input type="text" class="form-control" name="title">
+                </div>
+
+                <div class="mb-3">
+                    <label for="textbox" class="form-label" style="width: 12em;">Scrivi la tua recensione</label>
+                    <textarea type="text" class="form-control" rows="3" name="comment"
+                        placeholder="Commento" th:value="${userReview.comment}"></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-primary">Aggiorna Recensione</button>
+            </form>
+        </div>
+
+
+
+
+    </body>
+
+</html>

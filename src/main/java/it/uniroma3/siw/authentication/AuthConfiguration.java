@@ -32,14 +32,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	DataSource datasource;
 
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
-		auth.jdbcAuthentication()
-		.dataSource(datasource)
-		.authoritiesByUsernameQuery("SELECT username, role from credentials WHERE username=?")
-		.usersByUsernameQuery("SELECT username, password, 1 as enabled FROM credentials WHERE username=?");
-	}
-
+	
 	/**
 	 * Questo metodo contiene le impostazioni della configurazione
 	 * di autenticatzione e autorizzazione.
@@ -50,11 +43,10 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 		// AUTORIZZAZIONE: qui definiamo chi può accedere a cosa
 		.authorizeRequests()
 		// chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-		.antMatchers(HttpMethod.GET,  "/", "/index", "/login", "/register", "/css/**", "/images/**", "favicon.ico", "/movie","/movie/{movieId}","/artist","/artist/{artistId}", "/searchMovies", "/searchMoviesByTitle").permitAll()
+		.antMatchers(HttpMethod.GET,  "/", "/index", "/login", "/register", "/css/**", "/images/**", "favicon.ico", "/movie","/movie/{movieId}","/artist","/artist/{artistId}", "/searchMovies",
+												 "/searchMoviesByTitle", "/review").permitAll()
 		// chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
-		.antMatchers(HttpMethod.POST, "/login", "/register", "/searchMovies", "/searchMoviesByTitle" ).permitAll()
-		// solo gli utenti autenticati possono accedere alla pagina per accedere alle recensioni
-		.antMatchers(HttpMethod.GET,"/",  "formNewReview").hasAnyAuthority(DEFAULT_ROLE)
+		.antMatchers(HttpMethod.POST, "/login", "/register", "/searchMovies", "/searchMoviesByTitle", "/review" ).permitAll()
 		// solo gli utenti autenticati con ruolo ADMIN possono accedere a risorse con path /admin/**
 		.antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE)
 		.antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(ADMIN_ROLE)

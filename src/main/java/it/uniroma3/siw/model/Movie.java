@@ -1,12 +1,10 @@
 package it.uniroma3.siw.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,12 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.engine.profile.Fetch;
 
 @Entity
 public class Movie {
@@ -41,8 +38,19 @@ public class Movie {
 	public Movie() {
 	}
 
-	@Column(nullable = true, length = 64)
-	private ArrayList<String> images;
+	@OneToOne(cascade = CascadeType.REMOVE)
+	private Image image;
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+	private List<Image> images;
 	
 	@ManyToOne()
 	private Artist director;
@@ -87,16 +95,6 @@ public class Movie {
 		this.year = year;
 	}
 
-	public ArrayList<String> getImages() {
-		return images;
-	}
-
-
-
-	public void setImages(ArrayList<String> images) {
-		this.images = images;
-	}
-
 	public Artist getDirector() {
 		return director;
 	}
@@ -131,6 +129,14 @@ public class Movie {
 			return false;
 		Movie other = (Movie) obj;
 		return Objects.equals(title, other.title) && year.equals(other.year);
+	}
+
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 
 

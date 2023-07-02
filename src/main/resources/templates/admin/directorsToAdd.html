@@ -31,14 +31,22 @@
 			</div>
 		</div>
 	</nav>
-	<h1 th:text="'Regista per il film ' + ${movie.title}"></h1>
-	<div th:if="${artists.isEmpty()}">Non ci sono registi nel sistema</div>
-	<ul>
-		<li th:each="artist : ${artists}">
-			<a th:href="@{'/admin/setDirectorToMovie/'+ ${artist.id}+'/'+${movie.id}}"
-				th:text="${artist.name} + ' ' + ${artist.surname}">Steven Spielberg</a>
-		</li>
-	</ul>
+
+	<div class="container text-center my-5">
+		<h1 th:text="'Regista per il film ' + ${movie.title}"></h1>
+		<div th:if="${artists.isEmpty()}">Non ci sono registi nel sistema</div>
+
+		<div class="row row-cols-auto justify-content-center">
+			<div class="col" th:each="artist : ${artists}">
+				<div class="card" style="width: 10rem;" >
+					<img th:if="${artist.artistPicture}" th:src="@{'data:image/*;base64,'+${artist.artistPicture.b64Image}}"  class="card-img-top img-fluid" style="object-fit: cover; width: 12em ;height: 10em;" alt="Actor Image"/>
+					<div class="card-body">
+						<a a th:href="@{'/admin/setDirectorToMovie/'+ ${artist.id}+'/'+${movie.id}}"
+						th:text="${artist.name} + ' ' + ${artist.surname}">Dino Risi</a></div>
+				  </div>
+			</div>
+		</div>		
+	</div>
 </body>
 
 </html>

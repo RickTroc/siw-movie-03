@@ -31,14 +31,28 @@
 			</div>
 		</div>
 	</nav>
-	<h1>Film</h1>
+
+
+
+	
 	<div th:if="${movies.isEmpty()}">Non ci sono film nel sistema</div>
-	<ul>
-		<li th:each="movie : ${movies}">
-			<span th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2000)</span>
-			<a th:href="@{'/admin/formUpdateMovie' + '/' + ${movie.id}}">Aggiorna</a>
-		</li>
-	</ul>
+
+	<div class="container my-5 text-center">
+		<h1>Gestione Film</h1>
+		<div class="row justify-content-center">
+			<div class="col" th:each="movie : ${movies}">
+				<div class="card" style="width: 10rem;">
+					<img th:if="${movie.image}" th:src="@{'data:image/*;base64,'+${movie.image.b64Image}}">
+					<div class="card-body">
+						<a th:href="@{'/admin/formUpdateMovie' + '/' + ${movie.id}}"
+						th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2000)</a>
+					</div>
+				</div>
+			</div>
+		</div>		
+
+	</div>
+
 </body>
 
 </html>

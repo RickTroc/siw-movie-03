@@ -15,13 +15,18 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+
+    
+    public Review() {
+    }
+
     @Min(1)
     @Max(5)
     private int score;
 
     private String title;
 
-    private String review;
+    private String comment;
 
     @ManyToOne
     private Movie movie;
@@ -53,12 +58,12 @@ public class Review {
         this.title = title;
     }
 
-    public String getReview() {
-        return review;
+    public String getComment() {
+        return comment;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setComment(String review) {
+        this.comment = review;
     }
 
     public Movie getMovie() {
@@ -84,7 +89,7 @@ public class Review {
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + score;
         result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((review == null) ? 0 : review.hashCode());
+        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
         result = prime * result + ((movie == null) ? 0 : movie.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
         return result;
@@ -108,10 +113,10 @@ public class Review {
                 return false;
         } else if (!title.equals(other.title))
             return false;
-        if (review == null) {
-            if (other.review != null)
+        if (comment == null) {
+            if (other.comment != null)
                 return false;
-        } else if (!review.equals(other.review))
+        } else if (!comment.equals(other.comment))
             return false;
         if (movie == null) {
             if (other.movie != null)

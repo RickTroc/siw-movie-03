@@ -1,13 +1,21 @@
 package it.uniroma3.siw.controller;
 
+import java.io.IOException;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import it.uniroma3.siw.controller.validator.ArtistValidator;
 import it.uniroma3.siw.model.Artist;
 import it.uniroma3.siw.service.ArtistService;
 
@@ -16,6 +24,9 @@ public class ArtistController {
 
 	@Autowired
 	private ArtistService artistService;
+
+	@Autowired
+	private ArtistValidator artistValidator;
 
 	@GetMapping(value="/admin/formNewArtist")
 	public String formNewArtist(Model model) {
@@ -29,9 +40,11 @@ public class ArtistController {
 	}
 	
 	@PostMapping("/admin/artist")
-	public String newArtist(@ModelAttribute("artist") Artist artist, Model model) {
-		if (!artistService.existsByNameAndSurname(artist.getName(), artist.getSurname())) {
-			this.artistService.saveArtist(artist);
+	public String newArtist(@Valid @ModelAttribute("artist") Artist artist, 
+							Model model, @RequestParam("file") MultipartFile image, BindingResult bindingResult) throws IOException {
+		this.artistValidator.validate(artist, bindingResult);
+		if (!bindingResult.hasErrors()) {
+			this.artistService.saveArtist(artist, image);
 			model.addAttribute("artist", artist);
 			return "artist.html";
 		} else {

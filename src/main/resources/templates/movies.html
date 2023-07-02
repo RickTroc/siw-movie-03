@@ -38,17 +38,21 @@
 			<h1>Film</h1>
 			<div class="row">
 				<div class="col" th:each="movie : ${movies}">
-					<div class="card" style="width: 10rem;">
-						<!--<img  th:src={---} />-->
+					<div class="card-body my-5">
+						<div th:if="${movie.image}">
+							<img th:src="@{'data:image/*;base64,'+${movie.image.b64Image}}" class="d-block w-100 mx-auto">
+						</div>
+						
 						<div class="card-body">
 							<a th:href="@{'/movie' + '/' + ${movie.id}}"
-							th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2000)</a></div>
-					  </div>
+							th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2000)</a>
+						</div>
+					</div>
 				</div>
 			</div>		
 		</div>
-	</div>
-
+	</div>		
+	
 </body>
 
 </html>

@@ -37,10 +37,10 @@
 	<div th:if="${artists==null || artists.isEmpty()}">Non ci sono artisti nel sistema</div>
 	<div class="container my-5 text-center " >
 		<h1>Artisti</h1>
-		<div class="row row-cols-auto">
-			<div class="col" th:each="artist : ${artists}">
-				<div class="card" style="width: 10rem;">
-					<img th:src=${artist.urlOfPicture}  class="card-img-top img-fluid" style="object-fit: cover; width: 12em ;height: 10em;" alt="Actor Image"/>
+		<div class="row row-cols-auto justify-content-center">
+			<div class="col my-2" th:each="artist : ${artists}">
+				<div class="card" style="width: 10rem;" >
+					<img th:if="${artist.artistPicture}" th:src="@{'data:image/*;base64,'+${artist.artistPicture.b64Image}}"  class="card-img-top img-fluid" style="object-fit: cover; width: 12em ;height: 10em;" alt="Actor Image"/>
 					<div class="card-body">
 						<a a th:href="@{'/artist' + '/' + ${artist.id}}"
 						th:text="${artist.name} + ' ' + ${artist.surname}">Dino Risi</a></div>

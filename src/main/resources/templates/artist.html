@@ -36,14 +36,15 @@
 		
 		<div th:if="${artist}">
 			<h1 th:text="${artist.name} + ' ' + ${artist.surname}">Dino Risi</h1>
-			<p><img  th:src=${artist.urlOfPicture} /></p>
+			<img th:if="${artist.artistPicture}" th:src="@{'data:image/*;base64,'+${artist.artistPicture.b64Image}}" class="d-block w-25 mx-auto" >
 			<p th:text="'(' + ${artist.dateOfBirth} + ')'">20/20/2000</p>
+		
 
 			
 		</div>
 		<div th:unless="${artist}">Non esiste</div>
 	</div>
-
+	<!-- aggiungere starredMovie e directedMovie	 -->
 
   </body>
 </html>

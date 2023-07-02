@@ -12,6 +12,7 @@
 </head>
 
 <body>
+	<!--ADMIN-->
 	<nav class="navbar navbar-dark" style="background-color: gray;"> 
 		<div class="container-fluid">
 			<a class="navbar-brand" href="#">
@@ -31,6 +32,9 @@
 			</div>
 		</div>
 	</nav>
+
+
+
 	<div class="container text-center my-5" >
 		<h1>Consulta l'archivio</h1>
 		<div class="btn-group" role="group" aria-label="Basic example">
@@ -49,22 +53,41 @@
 	</div>
 	
 	<div class="container text-center my-4">
-		<h1>Operazioni per amministratore</h1>
-		<div class="btn-group" role="group" aria-label="Basic example">
-			<button type="button" class="btn btn-primary">
-				<a class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/admin/indexMovie">Operazioni sui film</a>
-			</button>
-			<button type="button" class="btn btn-primary">
-				<a class="link-light link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" href="/admin/indexArtist">Operazioni sugli artisti</a>
-			</button>
-		  </div>
-	<div>
-		
-	</div>
-	<div>
-		
-	</div>
 
+		<h1>Operazioni per amministratore</h1>
+		
+
+		<div class="row my-4">
+			<div class="col">
+				
+				<div class="dropdown ">
+					<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					Operazioni sui Film
+					</button>
+					<ul class="dropdown-menu">
+					<li><a class="dropdown-item" href="/admin/formNewMovie">Inserisci i dati di un film</a></li>
+					<li><a class="dropdown-item" href="/admin/manageMovies">Gestisci i film</a></li>
+					<li><a class="dropdown-item" href="/formSearchMovies">Cerca film per anno</a></li>
+					</ul>
+				</div>
+				
+			</div>
+
+			<div class="col">
+				
+			<div class="dropdown text-center">
+				<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				  Operazioni sugli Artisti
+				</button>
+				<ul class="dropdown-menu">
+				  <li><a class="dropdown-item" href="/admin/formNewArtist">inserisci i dati di un nuovo artista</a></li>
+				  <li><a class="dropdown-item" href="/artist">Artisti</a></li>
+				</ul>
+			</div>
+		
+			</div>
+		</div>
+		
 	</div>
 	
 

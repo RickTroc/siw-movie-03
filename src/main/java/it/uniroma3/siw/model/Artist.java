@@ -7,81 +7,78 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Artist {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
 
 	private String name;
 	private String surname;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dateOfBirth;
-	private String urlOfPicture;
-	
-	@ManyToMany(mappedBy="actors")
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dateOfDeath;
+
+	@OneToOne(cascade = CascadeType.REMOVE)
+	private Image artistPicture;
+
+	@ManyToMany(mappedBy = "actors")
 	private Set<Movie> starredMovies;
-	
-	@OneToMany(mappedBy="director")
+
+	@OneToMany(mappedBy = "director")
 	private List<Movie> directedMovies;
 
-	
-
-	public Artist(){
+	public Artist() {
 		this.starredMovies = new HashSet<>();
 		this.directedMovies = new LinkedList<>();
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getSurname() {
 		return surname;
 	}
-	
+
 	public void setSurname(String surname) {
 		this.surname = surname;
 	}
-	
+
 	public LocalDate getDateOfBirth() {
 		return dateOfBirth;
 	}
-	
+
 	public void setDateOfBirth(LocalDate dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	
-	public String getUrlOfPicture() {
-		return urlOfPicture;
-	}
-	
-	public void setUrlOfPicture(String urlOfPicture) {
-		this.urlOfPicture = urlOfPicture;
-	}
-	
+
 	public Set<Movie> getActorOf() {
 		return starredMovies;
 	}
@@ -97,8 +94,6 @@ public class Artist {
 	public void setDirectorOf(List<Movie> directedMovies) {
 		this.directedMovies = directedMovies;
 	}
-
-	
 
 	@Override
 	public int hashCode() {
@@ -131,6 +126,22 @@ public class Artist {
 
 	public void setDirectedMovies(List<Movie> directedMovies) {
 		this.directedMovies = directedMovies;
+	}
+
+	public Image getArtistPicture() {
+		return artistPicture;
+	}
+
+	public void setArtistPicture(Image artistPicture) {
+		this.artistPicture = artistPicture;
+	}
+
+	public LocalDate getDateOfDeath() {
+		return dateOfDeath;
+	}
+
+	public void setDateOfDeath(LocalDate dateOfDeath) {
+		this.dateOfDeath = dateOfDeath;
 	}
 
 }

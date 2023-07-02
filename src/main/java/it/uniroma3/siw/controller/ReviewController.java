@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import it.uniroma3.siw.model.Movie;
 import it.uniroma3.siw.model.Review;
 import it.uniroma3.siw.model.User;
@@ -34,18 +36,30 @@ public class ReviewController {
 
 
     @Transactional
+    @GetMapping(value = "/review")
+    public String getReview(Model model){
+        model.addAttribute("movies", this.movieRepository.findAll());
+        model.addAttribute("reviews", this.reviewRepository.findAll());
+
+
+        return "movie.html";
+    }
+
+
+    @Transactional
     @PostMapping(value="/review")
     public String newReview(@RequestParam("movie") Long movieId, @RequestParam("score") int score, @RequestParam("title") String title, 
                             @RequestParam("comment") String comment, Model model ) {
         
         Movie movie = this.movieRepository.findById(movieId).get();
         User user = this.credentialsService.getLoggedUser();
+
         if(!user.getReviews().containsKey(movie)){
             Review review = new Review();
             review.setMovie(movie);
             review.setScore(score);
             review.setTitle(title);
-            review.setReview(comment);
+            review.setComment(comment);
             review.setUser(user);
             this.reviewRepository.save(review);
 
@@ -55,31 +69,16 @@ public class ReviewController {
             this.userRepository.save(user);
             this.movieRepository.save(movie);
         }
-
-        model.addAttribute("user", user.getReviews().get(movie));
+     
+        model.addAttribute("userReview", user.getReviews().get(movie));
         model.addAttribute("movie", movie);
         model.addAttribute("movieReviews", this.reviewRepository.findMovieReviewsWithoutUser(movieId, user.getId()));
-
         return "movie.html";
-    }
-    
-    @Transactional
-    @GetMapping(value="deleteReview/{reviewId}")
-    public String removeReview(@RequestParam("reviewId") Long reviewId, Model model) {
-        User user = this.credentialsService.getLoggedUser();
-        Movie movie = this.reviewService.findReview(reviewId).getMovie();
-        if(this.reviewService.checkUserReview(user, reviewId)){
-            this.reviewService.removeReview(reviewId);
-            model.addAttribute("movie", movie);
-            model.addAttribute("userReviews", movie.getReviews());
-            return "movie.html";
-        }
-        return "failedReviewDelete.html";
     }
 
     @Transactional
     @GetMapping(value = "updateReview/{reviewId}")
-    public String updateReview(@RequestParam("reviewId") Long reviewId, Model model){
+    public String updateReview(@PathVariable("reviewId") Long reviewId, Model model){
         User user = this.credentialsService.getLoggedUser();
         if(this.reviewService.checkUserReview(user, reviewId)){
             Review review = this.reviewService.findReview(reviewId);
@@ -96,7 +95,7 @@ public class ReviewController {
                                 @RequestParam("title")String title, @RequestParam("comment")String comment, Model model){
 
         Review review = this.reviewService.findReview(reviewId);
-        review.setReview(comment);
+        review.setComment(comment);
         review.setScore(score);
         review.setTitle(title);
         this.reviewService.save(review);
@@ -108,10 +107,25 @@ public class ReviewController {
         model.addAttribute("movieReviews", this.reviewRepository.findMovieReviewsWithoutUser(movie.getId(), user.getId()));
         return "movie.html";
     }
-    
+        
+    @Transactional
+    @GetMapping(value="deleteReview/{reviewId}")
+    public String removeReview(@PathVariable("reviewId") Long reviewId, Model model) {
+        User user = this.credentialsService.getLoggedUser();
+        Movie movie = this.reviewService.findReview(reviewId).getMovie();
+        
+        if(this.reviewService.checkUserReview(user, reviewId)){
+            this.reviewService.removeReview(reviewId);
+            model.addAttribute("movie", movie);
+            model.addAttribute("movieReviews", movie.getReviews());
+            return "movie.html";
+        }
+        return "failedReviewDelete.html";
+    }
+
     @Transactional
     @GetMapping(value = "admin/deleteReview/{reviewId}")
-    public String adminRemoveReview(@RequestParam("reviewId") Long reviewId, Model model){
+    public String adminRemoveReview(@PathVariable("reviewId") Long reviewId, Model model){
         Movie movie = this.reviewService.findReview(reviewId).getMovie();
         this.reviewService.removeReview(reviewId);
         model.addAttribute("movie", movie);

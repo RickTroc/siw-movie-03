@@ -1,104 +1,215 @@
 <!DOCTYPE html>
-<html data-bs-theme = "dark">
+<html data-bs-theme="dark">
 
-<head>
-	<title>
-		SiwMovie - Homepage
-	</title>
-	<link rel="stylesheet" href="/css/stile.css" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+	<head>
+		<title>
+			SiwMovie - Homepage
+		</title>
+		<link rel="stylesheet" href="/css/stile.css" />
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+			crossorigin="anonymous"></script>
 
-</head>
+	</head>
 
-<body>
-	<nav class="navbar navbar-dark" style="background-color: gray;"> 
-		<div class="container-fluid">
-			<a class="navbar-brand" href="/">
-                <img src="/images/logo-siw.png" alt="Logo" width="300" height="50" class="d-inline-block align-text-top" >
-                
-            </a>
-			<div th:if="${#request.userPrincipal}">
-				<span th:text="${#request.userPrincipal.principal.username}"></span>
-				<button type="button" class="btn btn-dark btn-primary" href="/logout">
-					<a class="decorless" href="/logout" >Logout</a>
-				</button>
+	<body>
+		<nav class="navbar navbar-dark" style="background-color: gray;">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/">
+					<img src="/images/logo-siw.png" alt="Logo" width="300" height="50"
+						class="d-inline-block align-text-top">
+
+				</a>
+				<div th:if="${#request.userPrincipal}">
+					<span th:text="${#request.userPrincipal.principal.username}"></span>
+					<button type="button" class="btn btn-dark btn-primary" href="/logout">
+						<a class="decorless" href="/logout">Logout</a>
+					</button>
+				</div>
+				<div th:unless="${#request.userPrincipal}">
+					<button type="button" class="btn btn-dark btn-primary" href='/login'>
+						<a class="decorless" href="/login">Login</a>
+					</button>
+				</div>
 			</div>
-			<div th:unless="${#request.userPrincipal}">
-				<button type="button" class="btn btn-dark btn-primary" href='/login'>
-					<a class="decorless" href="/login" >Login</a>	
-				</button>
+		</nav>
+
+		<div class="container my-5 text-center">
+			<div th:if="${movie}">
+
+				<h1 th:text="${movie.title}">Up!</h1>
+				<div th:if="${movie.image}">
+					<img th:src="@{'data:image/*;base64,'+${movie.image.b64Image}}" alt="Responsive Image"
+						class="img-fluid">
+				</div>
+				<div th:unless="${movie.image}">
+					<p>loncandina non disponibile</p>
+				</div>
+
+				<div>
+					<p th:text="'(' + ${movie.year} + ')'">2000</p>
+				</div>
 			</div>
-		</div>
-	</nav>
 
-	<div class="container my-5 text-center">
-		<div th:if="${movie}">
-		
-			<h1 th:text="${movie.title}">Up!</h1>
-				<!--<span><img width="5%" th:src=${movie.urlImage} /></span>-->
 
-			<span th:text="'(' + ${movie.year} + ')'">2000</span>
-		</div>
-		
-		
-		
+			<h1>Regista</h1>
 			<div class="row " th:if="${movie.director}">
 				<div class="col">
-					<h1>Direttore</h1>
-				<div class="card mx-auto my-5" style="width: 10rem;">
-				<img th:src=${movie.director.urlOfPicture}  class="card-img-top "/>
-				<div class="card-body">
-					<p class="card-text" th:text="${movie.director.name} + ' ' + ${movie.director.surname}"></p>
-				  </div>
+					<div class="card mx-auto my-5" style="width: 10rem;">
+						<img th:if="${movie.director.artistPicture}"
+							th:src="@{'data:image/*;base64,'+${movie.director.artistPicture.b64Image}}"
+							class="card-img-top " />
+						<div class="card-body">
+							<p class="card-text" th:text="${movie.director.name} + ' ' + ${movie.director.surname}"></p>
+						</div>
+					</div>
 				</div>
 			</div>
-			
-			
+			<div class="row my-5" th:unless="${movie.director}">
+				<p>Nessun regista nel sistema</p>
+			</div>
+
+
 
 			<h1>Cast</h1>
-			<div class="row my-5 g-2">
+			<div th:if="${!movie.actors.isEmpty()}" class="row my-5 g-2  justify-content-center">
 				<div class="col" th:each="actor:${movie.actors}">
-					<div class="card" style="width: 50%;" >
-						<img th:src=${actor.urlOfPicture}  class="card-img-top img-fluid" style="object-fit: cover; width: 12em ;height: 10em;" alt="Actor Image"/>
+					<div class="card mx-auto my-5" style="width: 10rem;">
+
+						<img th:if="${actor.artistPicture}"
+							th:src="@{'data:image/*;base64,'+${actor.artistPicture.b64Image}}"
+							class="card-img-top w-10 " alt="Actor Image" />
 						<div class="card-body">
-						  <p class="card-text" th:text="${actor.name} + ' ' + ${actor.surname}"></p>
+							<p class="card-text " th:text="${actor.name} + ' ' + ${actor.surname}"></p>
 						</div>
-					  </div>
+					</div>
 				</div>
 			</div>
-			
 
-			
-		</div>
-		<div th:unless="${movie}">Non esiste</div>
-
-	</div>
-
-	<!--parte dedicata all'inserimento della recensioni-->
-    <div th:if="${#request.userPrincipal != null && userReview!=null}" >
-		<div class="container">
-			<div class="btn-group me-2" role="group" aria-label="First group">
-				<button type="button" class="btn btn-primary">1</button>
-				<button type="button" class="btn btn-primary">2</button>
-				<button type="button" class="btn btn-primary">3</button>
-				<button type="button" class="btn btn-primary">4</button>
-				<button type="button" class="btn btn-primary">5</button>
-			</div>
-			
-			<div class="mb-3 my-3">
-				<label for="exampleFormControlInput1" class="form-label ">Titolo della recensione</label>
-				<input type="text" class="form-control" id="reviewTitle" >
-			  </div>
-			
-			<div class="mb-3">
-				<label for="textbox" class="form-label">Scrivi la tua recensione</label>
-				<textarea class="form-control" id="reviewTextBox" rows="3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi voluptas itaque harum beatae in cumque, praesentium, corporis sit tempora similique obcaecati reiciendis sunt accusantium, cum reprehenderit? Quas optio eligendi eaque.</textarea>
+			<div th:unless="${!movie.actors.isEmpty()}" class="row my-5">
+				<p>Non sono presenti attori registrati per questo film</p>
 			</div>
 		</div>
-		
-	</div>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-  </body>
+		<div class="text-center" th:unless="${movie}">Non esiste</div>
+
+
+
+		<div class="container text-center ">
+			<h1>Gallery</h1>
+			<div th:if="${!movie.images.isEmpty()}">
+
+				<div id="carouselExample" class="carousel slide my-4">
+					<div class="carousel-inner">
+						<div class="carousel-item active" th:each="image: ${movie.images}">
+							<img th:src="@{'data:image/*;base64,'+${image.b64Image}}" class="d-block w-25 mx-auto">
+						</div>
+					</div>
+					<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
+						data-bs-slide="prev">
+						<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Previous</span>
+					</button>
+					<button class="carousel-control-next" type="button" data-bs-target="#carouselExample"
+						data-bs-slide="next">
+						<span class="carousel-control-next-icon" aria-hidden="true"></span>
+						<span class="visually-hidden">Next</span>
+					</button>
+				</div>
+			</div>
+			<div th:unless="${!movie.images.isEmpty()}">
+				<p>non ci sono immagini nella galleria per questo film</p>
+			</div>
+		</div>
+
+
+
+
+		<!--Parte dedicata alla stampa di tutte le recensioni del film-->
+		<div class="container my-5 border text-center" th:if="${movie.reviews != null && !(movie.reviews.isEmpty())}">
+			<h1>Recensioni</h1>
+			<div class="row my-3">
+				<div class="col" th:each="review:${movie.reviews}">
+					<div class="card">
+						<div class="card-body">
+							<h5 th:text="${review.title}" class="card-title">Card title</h5>
+							<h6 th:text="${review.score} + '/5' " class="card-subtitle mb-2 text-body-secondary">Card
+								subtitle</h6>
+							<p th:text="${review.comment}" class="card-text">Some quick example text to build on the
+								card title and make up the bulk of the card's content.</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="container text-center my-5" th:unless="${movie.reviews != null && !(movie.reviews.isEmpty())}">
+			<h1>Recensioni</h1>
+			<p>Non ci sono recensioni nel sistema</p>
+		</div>
+
+		<!--Parte dedicata alla propria recensione-->
+		<div class="container" th:if="${#request.userPrincipal != null && userReview!=null}">
+			<h1>La tua recensione</h1>
+			<div class="card" style="width: 18rem;">
+
+				<div class="card-body">
+					<h5 th:text="${userReview.title}" class="card-title">Card title</h5>
+					<h6 th:text="${userReview.score} + '/5' " class="card-subtitle mb-2 text-body-secondary">Card
+						subtitle</h6>
+					<p th:text="${userReview.comment}" class="card-text">Some quick example text to build on the card
+						title and make up the bulk of the card's content.</p>
+
+					<input type="hidden" name="reviewId" th:value="${userReview.id}">
+
+					<a th:href="@{'/updateReview/'+ ${userReview.id}}" class="card-link decorless">Modifica </a>
+					<a th:href="@{'/deleteReview/'+ ${userReview.id}}" class="card-link decorless">Elimina </a>
+				</div>
+			</div>
+
+		</div>
+
+
+		<!--parte dedicata all'inserimento della recensioni-->
+		<div>
+
+		</div>
+
+		<div th:if="${#request.userPrincipal != null}" class="container my-5">
+
+			<div th:if="${userReview == null}">
+				<h1>Nuova recensione</h1>
+				<form th:action="@{/review}" method="post">
+					<p>Punteggio</p>
+
+					<input type="number" min="1" max="5" name="score" placeholder="Score">
+
+					<input type="hidden" name="movie" th:value="${movie.id}">
+
+					<div class="mb-3 my-3">
+						<label for="reviewTitle" class="form-label" style="width: 12em;">Titolo della recensione</label>
+						<input type="text" class="form-control" name="title">
+					</div>
+
+					<div class="mb-3">
+						<label for="textbox" class="form-label" style="width: 12em;">Scrivi la tua recensione</label>
+						<textarea type="text" class="form-control" rows="3" name="comment"
+							placeholder="Commento"></textarea>
+					</div>
+					<button type="submit" class="btn btn-outline-primary">Invia recensione</button>
+
+				</form>
+			</div>
+
+		</div>
+
+
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+			crossorigin="anonymous"></script>
+	</body>
+
 </html>
