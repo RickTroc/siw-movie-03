@@ -1,6 +1,7 @@
 package it.uniroma3.siw.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import it.uniroma3.siw.controller.validator.ArtistValidator;
 import it.uniroma3.siw.model.Artist;
+import it.uniroma3.siw.model.Movie;
 import it.uniroma3.siw.service.ArtistService;
 
 @Controller
@@ -64,4 +66,78 @@ public class ArtistController {
 		model.addAttribute("artists", this.artistService.findAllArtist());
 		return "artists.html";
 	}
+
+
+
+	@GetMapping("/admin/updateDirectedMovies/{id}")
+	public String updateDirectedMovies(@PathVariable("id") Long id, Model model) {
+		List<Movie> movieToAdd = this.artistService.directedMovieToAdd(id);
+		Artist artist = this.artistService.findArtistById(id);
+		model.addAttribute("directedMoviesToAdd", movieToAdd);
+		model.addAttribute("directedMovies", this.artistService.getDirectedMovies(id));
+		model.addAttribute("artist",artist);
+		return "admin/directedMoviesToAdd.html";
+	}
+
+	
+	@GetMapping("/admin/updateStarredMovies/{id}")
+	public String updateStarredMovies(@PathVariable("id") Long id, Model model) {
+		List<Movie> movieToAdd = this.artistService.starredMovieToAdd(id);
+		model.addAttribute("starredMoviesToAdd", movieToAdd);
+		model.addAttribute("artist", this.artistService.findArtistById(id));
+		return "admin/starredMoviesToAdd.html";
+	}
+
+	
+	@GetMapping(value = "/admin/addDirectedMovieToArtist/{artistId}/{movieId}")
+	public String addDirectedMovieToArtist(@PathVariable("artistId") Long artistId,
+			@PathVariable("movieId") Long movieId,
+			Model model) {
+		Artist artist = this.artistService.addDirectedMovieToArtist(movieId, artistId);
+		List<Movie> moviesToAdd = this.artistService.directedMovieToAdd(artistId);
+		model.addAttribute("artist", artist);
+		model.addAttribute("directedMovies", this.artistService.getDirectedMovies(artistId));
+		model.addAttribute("directedMoviesToAdd", moviesToAdd);
+		return "admin/directedMoviesToAdd.html";
+	}
+
+	
+	@GetMapping(value = "/admin/addStarredMovieToArtist/{artistId}/{movieId}")
+	public String addStarredMovieToArtist(@PathVariable("artistId") Long artistId,
+			@PathVariable("movieId") Long movieId,
+			Model model) {
+		Artist artist = this.artistService.addStarredMovieToArtist(movieId, artistId);
+		List<Movie> moviesToAdd = this.artistService.starredMovieToAdd(artistId);
+		model.addAttribute("artist", artist);
+		model.addAttribute("starredMoviesToAdd", moviesToAdd);
+		return "admin/starredMoviesToAdd.html";
+	}
+
+	
+	@GetMapping(value = "/admin/removeDirectedMovieFromArtist/{artistId}/{movieId}")
+	public String removeDirectedMovieFromArtist(@PathVariable("artistId") Long artistId,
+			@PathVariable("movieId") Long movieId,
+			Model model) {
+		Artist artist = this.artistService.removeDirectedMovieFromArtist(artistId, movieId);
+		List<Movie> moviesToAdd = this.artistService.directedMovieToAdd(artistId);
+		model.addAttribute("artist", artist);
+		model.addAttribute("directedMovies", this.artistService.getDirectedMovies(artistId));
+		model.addAttribute("directedMoviesToAdd", moviesToAdd);
+		return "admin/directedMoviesToAdd.html";
+	}
+
+	
+	@GetMapping(value = "/admin/removeStarredMovieFromArtist/{artistId}/{movieId}")
+	public String removeStarredMovieFromArtist(@PathVariable("artistId") Long artistId,
+			@PathVariable("movieId") Long movieId,
+			Model model) {
+		Artist artist = this.artistService.removeStarredMovieFromArtist(artistId, movieId);
+		List<Movie> moviesToAdd = this.artistService.starredMovieToAdd(artistId);
+		model.addAttribute("artist", artist);
+		model.addAttribute("starredMoviesToAdd", moviesToAdd);
+		return "admin/starredMoviesToAdd.html";
+	}
+	
+
+
 }

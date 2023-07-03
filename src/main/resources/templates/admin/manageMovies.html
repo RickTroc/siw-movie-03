@@ -43,9 +43,10 @@
 			<div class="col" th:each="movie : ${movies}">
 				<div class="card" style="width: 10rem;">
 					<img th:if="${movie.image}" th:src="@{'data:image/*;base64,'+${movie.image.b64Image}}">
+					<p th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2020)</p>
 					<div class="card-body">
-						<a th:href="@{'/admin/formUpdateMovie' + '/' + ${movie.id}}"
-						th:text="${movie.title} + ' (' + ${movie.year} + ')'">Up! (2000)</a>
+						<a class="btn" th:href="@{'/admin/formUpdateMovie' + '/' + ${movie.id}}">Aggiorna</a>
+						<a class="btn" th:href="@{'/admin/DeleteMovie' + '/' + ${movie.id}}">Elimina</a>
 					</div>
 				</div>
 			</div>

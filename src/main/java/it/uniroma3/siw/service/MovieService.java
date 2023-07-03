@@ -81,6 +81,17 @@ public class MovieService {
 		}
 		return actorsToAdd;
 	}
+
+	@Transactional
+    public Iterable<Movie> findMovieNotDirected(Long id) {
+        return this.movieRepository.findMovieNotDirected(id);
+    }
+
+    @Transactional
+    public Iterable<Movie> findMovieNotStarred(Long id) {
+        return this.movieRepository.findMovieNotStarred(id);
+    }
+
 	public List<Movie> findByYear(int year) {
 		return this.movieRepository.findByYear(year);
 	}
@@ -155,6 +166,15 @@ public class MovieService {
 			this.imageRepository.save(img);
 
 			movie.getImages().add(img);
+			this.movieRepository.save(movie);
+		}
+	}
+
+	public void addPoster(Movie movie, MultipartFile movieImg) throws IOException{
+		if(this.imageValidator.isImage(movieImg) || movieImg.getSize() < imageValidator.MAX_SIZE){
+			Image img = new Image(movieImg.getBytes());
+			this.imageRepository.save(img);
+			movie.setImage(img);
 			this.movieRepository.save(movie);
 		}
 	}

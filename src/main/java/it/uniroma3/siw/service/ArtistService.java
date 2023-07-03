@@ -1,6 +1,8 @@
 package it.uniroma3.siw.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +28,11 @@ public class ArtistService {
 	@Autowired
 	private ImageRepository imageRepository;
 
+	@Autowired
+	private MovieRepository movieRepository;
+
+	@Autowired 
+	private MovieService movieService;
 
 
     @Transactional
@@ -75,4 +82,79 @@ public class ArtistService {
 		return oldArtist;
 	}
 	
+
+    @Transactional
+    public List<Movie> directedMovieToAdd(Long id) {
+        List<Movie> moviesToAdd = new ArrayList<>();
+
+		for (Movie m : this.movieService.findMovieNotDirected(id)) {
+			moviesToAdd.add(m);
+		}
+		return moviesToAdd;
+    }
+  
+	@Transactional
+    public List<Movie> starredMovieToAdd(Long id) {
+        List<Movie> moviesToAdd = new ArrayList<>();
+
+		for (Movie m : this.movieService.findMovieNotStarred(id)) {
+			moviesToAdd.add(m);
+		}
+		return moviesToAdd;
+    }
+	@Transactional
+    public Artist addDirectedMovieToArtist(Long movieId, Long artistId) {
+        Artist artist = this.findArtistById(artistId);
+        Movie movie = this.movieService.findMovieById(movieId);
+        artist.getDirectedMovies().add(movie);
+        movie.setDirector(artist);
+        this.movieRepository.save(movie);
+        return artist;
+    }
+    @Transactional
+    public Artist removeDirectedMovieFromArtist(Long artistId, Long movieId) {
+        Movie movie = this.movieService.findMovieById(movieId);
+        Artist artist = this.findArtistById(artistId);
+        artist.getDirectedMovies().remove(movie);
+        movie.setDirector(null);
+        this.movieRepository.save(movie);
+        return artist;
+    }
+	@Transactional
+    public Artist addStarredMovieToArtist(Long movieId, Long artistId) {
+        Artist artist = this.findArtistById(artistId);
+        Movie movie = this.movieService.findMovieById(movieId);
+        artist.getStarredMovies().add(movie);
+        movie.getActors().add(artist);
+        this.artistRepository.save(artist);
+        return artist;
+    }
+   
+    @Transactional
+    public Artist removeStarredMovieFromArtist(Long artistId, Long movieId) {
+        Movie movie = this.movieService.findMovieById(movieId);
+        Artist artist = this.findArtistById(artistId);
+        artist.getStarredMovies().remove(movie);
+        movie.getActors().remove(artist);
+        this.artistRepository.save(artist);
+        return artist;
+    }
+
+    @Transactional
+    public Iterable<Movie> findDirectedMovies(Long artistId){
+		return this.movieRepository.findDirectedMovies(artistId);
+	}
+
+    @Transactional
+    public List<Movie> getDirectedMovies(Long artistId) {
+        List<Movie> out = new LinkedList<>();
+
+        for (Movie m : this.findDirectedMovies(artistId)) {
+            out.add(m);
+        }
+        return out;
+    }
+
+
+
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,8 +22,6 @@ import it.uniroma3.siw.controller.validator.ImageValidator;
 import it.uniroma3.siw.controller.validator.MovieValidator;
 import it.uniroma3.siw.model.Artist;
 import it.uniroma3.siw.model.Movie;
-import it.uniroma3.siw.repository.ArtistRepository;
-import it.uniroma3.siw.repository.ImageRepository;
 import it.uniroma3.siw.repository.MovieRepository;
 import it.uniroma3.siw.service.ArtistService;
 import it.uniroma3.siw.service.MovieService;
@@ -32,17 +31,12 @@ public class MovieController {
 	@Autowired 
 	private MovieRepository movieRepository;
 	
-	@Autowired
-	private ArtistRepository artistRepository;
-
 	@Autowired 
 	private ArtistService artistService;
 
 	@Autowired 
 	private MovieValidator movieValidator;
 	
-	@Autowired
-	private ImageRepository imageRepository;
 
 	@Autowired
 	private ImageValidator imageValidator;
@@ -89,6 +83,14 @@ public class MovieController {
 		model.addAttribute("artists", this.artistService.findAllArtist());
 		model.addAttribute("movie", this.movieService.findMovieById(id));
 		return "admin/directorsToAdd.html";
+	}
+
+
+	@GetMapping(value = "/admin/DeleteMovie/{id}")
+	public String deleteMovie(@PathVariable("id") Long id, Model model) {
+		this.movieService.deleteMovie(id);
+		model.addAttribute("movies", this.movieService.findAllMovies());
+		return "admin/manageMovies.html";
 	}
 
 	@PostMapping("/admin/movie")
@@ -171,6 +173,14 @@ public class MovieController {
 		model.addAttribute("actorsToAdd", actorsToAdd);
 
 		return "admin/actorsToAdd.html";
+	}
+
+	@PostMapping(value = "/admin/addPoster")
+	public String addPoster(@RequestParam("file") MultipartFile image, @RequestParam("movie") Long movieId, Model model) throws IOException{
+		Movie movie = this.movieService.findMovieById(movieId);
+		this.movieService.addPoster(movie, image);
+		model.addAttribute("movie", movie);
+		return "admin/formUpdateMovie.html";
 	}
 
 	@PostMapping(value = "/admin/addImage")
